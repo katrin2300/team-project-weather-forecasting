@@ -5,17 +5,26 @@ from modules.bst import BinarySearchTree
 
 
 def load_data(filename):
-    """Загрузка дат и температур из CSV-файла."""
+    """
+    Загружает даты и температуры из CSV-файла.
+
+    Параметры:
+        filename - CSV-файл
+
+    Возвращает:
+        dates — список дат
+        temperatures — список температур в виде чисел с плавающей точкой
+    """
     dates = []
     temperatures = []
 
     with open(filename, 'r', encoding='utf-8') as file:
         first_line = file.readline()
         file.seek(0)
-        delimiter = ';' if ';' in first_line else ','
+        delimiter = ';' if ';' in first_line else ','  # определяем разделитель
 
         reader = csv.reader(file, delimiter=delimiter)
-        next(reader)  # пропуск заголовка
+        next(reader)  # пропускаем заголовок
 
         for row in reader:
             if len(row) < 2:
@@ -25,7 +34,7 @@ def load_data(filename):
 
             dates.append(row[0].strip())
             try:
-                temp = float(row[1].replace(',', '.'))
+                temp = float(row[1].replace(',', '.'))  # делаем температуру числом
                 temperatures.append(round(temp, 2))
             except ValueError:
                 continue
@@ -34,7 +43,15 @@ def load_data(filename):
 
 
 def compute_prefix_sums(temperatures):
-    """Префиксные суммы: prefix_sums[i] = сумма первых i температур."""
+    """
+    Строит массив префиксных сумм для температур
+
+    Параметры:
+        temperatures - список температур по дням
+
+    Возвращает:
+        массив префиксных сумм
+    """
     prefix_sums = [0] * (len(temperatures) + 1)
     for i in range(len(temperatures)):
         prefix_sums[i + 1] = prefix_sums[i] + temperatures[i]
@@ -42,12 +59,31 @@ def compute_prefix_sums(temperatures):
 
 
 def get_sum_between_days(prefix_sums, start_idx, end_idx):
-    """Сумма температур на отрезке [start_idx, end_idx] через префиксные суммы."""
+    """
+    Считает сумму температур на отрезке с помощью префиксной суммы
+
+    Параметры:
+        prefix_sums - массив префиксных сумм
+        start_idx - индекс первого дня в отрезке, в нашем случае всегда первый день месяца
+        end_idx - индекс последнего дня в отрезке, в нашем случает всегда последний день месяца
+
+    Возвращает:
+        сумму температур с первого по последний дни
+    """
     return prefix_sums[end_idx + 1] - prefix_sums[start_idx]
 
 
 def parse_date(date_str):
-    """Разбор даты. В CSV используется формат ДД.ММ.ГГГГ."""
+    """
+    Преобразует строку с датой в объект date
+
+    Параметры:
+        date_str - строка с датой
+            Поддерживаемые форматы:
+
+    Возвращает:
+        объект даты, если распознать формат удалось, если нет - None
+    """
     date_str = (date_str or "").strip()
     for fmt in ("%d.%m.%Y", "%Y-%m-%d", "%d/%m/%Y"):
         try:
@@ -58,7 +94,12 @@ def parse_date(date_str):
 
 
 def find_date_index(dates, date_str):
-    """Номер строки в списке по дате. -1, если дата не найдена."""
+    """
+    Ищет индекс даты в списке дат
+
+    Возвращает:
+        индекс найденной даты в списке dates, если дата не найдена или не распознана - -1
+    """
     target = parse_date(date_str)
     if target is None:
         return -1
