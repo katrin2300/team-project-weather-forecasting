@@ -1,5 +1,11 @@
 class BSTNode:
+    """
+    узел бинарного дерева плиска (температура и список дат)
+    """
     def __init__(self, temperature, date):
+        """
+        функция 
+        """
         self.temperature = temperature
         self.dates = [date]
         self.left = None
