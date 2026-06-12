@@ -5,6 +5,7 @@
 Участницы проекта:
 
 Медведева Ксения: main.py, queue.py, часть analysis.py, README.md
+
 Слаутина Екатерина: stack.py, bst.py, часть analysis.py
 
 1.	Введение
