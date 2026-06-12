@@ -35,7 +35,7 @@ def load_data(filename):
             dates.append(row[0].strip())
             try:
                 temp = float(row[1].replace(',', '.'))  # делаем температуру числом
-                temperatures.append(round(temp, 2))
+                temperatures.append(round(temp, 2))  # округляем значение температуры до двух знаков после запятой
             except ValueError:
                 continue
 
