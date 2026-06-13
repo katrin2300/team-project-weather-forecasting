@@ -65,7 +65,7 @@ def get_sum_between_days(prefix_sums, start_idx, end_idx):
     Параметры:
         prefix_sums - массив префиксных сумм
         start_idx - индекс первого дня в отрезке, в нашем случае всегда первый день месяца
-        end_idx - индекс последнего дня в отрезке, в нашем случает всегда последний день месяца
+        end_idx - индекс последнего дня в отрезке, в нашем случае всегда последний день месяца
 
     Возвращает:
         сумму температур с первого по последний дни
@@ -79,7 +79,7 @@ def parse_date(date_str):
 
     Параметры:
         date_str - строка с датой
-            Поддерживаемые форматы:
+            Поддерживаемые форматы: ДД.ММ.ГГГГ, ГГГГ-ММ-ДД, ДД/ММ/ГГГГ
 
     Возвращает:
         объект даты, если распознать формат удалось, если нет - None
@@ -117,7 +117,7 @@ def average_temperature_by_month(dates, temperatures, prefix_sums):
     ]
 
     month_avg = []
-    current_key = None  # (год, месяц)
+    current_key = None  #(год, месяц)
     start_idx = None
     count_in_month = 0
 
@@ -158,7 +158,16 @@ def average_temperature_by_month(dates, temperatures, prefix_sums):
 
 
 def find_min_max_temp(temperatures, dates):
-    """Линейный поиск самого холодного и самого тёплого дня."""
+    """
+    функция find_min_max_temp находит самый холодный и самый тёплый день (линейный поиск)
+
+    параметры:
+    temperatures: список температур
+    dates: список дат
+        
+    возвращает:
+    кортеж из двух кортежей: ((min_day, min_temp), (max_day, max_temp))
+    """
     if len(temperatures) == 0:
         return None, None
 
@@ -177,7 +186,15 @@ def find_min_max_temp(temperatures, dates):
 
 
 def sort_months_by_temp(month_avg):
-    """Сортировка месяцев по средней температуре (сортировка вставками)."""
+    """
+    функция sort_months_by_temp сортирует месяцы по средней температуре (сортировка вставками)
+
+    параметры:
+    month_avg: список кортежей (месяц, средняя температура)
+    
+    возвращает:
+    отсортированный список кортежей
+    """
     arr = month_avg[:]
     for i in range(1, len(arr)):
         key_item = arr[i]
@@ -190,7 +207,15 @@ def sort_months_by_temp(month_avg):
 
 
 def sort_pairs_by_temp(pairs):
-    """Сортировка пар (температура, дата) по температуре — вставками."""
+    """
+    функция sort_pairs_by_temp сортирует пары (температура, дата) по температуре (сортировка вставками)
+
+    параметры:
+    pairs: список пар (температура, дата)
+    
+    возвращает:
+    отсортированный список пар
+    """
     arr = pairs[:]
     for i in range(1, len(arr)):
         key_item = arr[i]
@@ -203,7 +228,16 @@ def sort_pairs_by_temp(pairs):
 
 
 def build_temperature_tree(dates, temperatures):
-    """BST: ключ — температура, в узле список дат с этой температурой."""
+    """
+    функция build_temperature_tree строит бинарное дерево поиска по температурам
+
+    параметры:
+    dates: список дат
+    temperatures: список температур
+    
+    возвращает:
+    построенное дерево BST
+    """
     tree = BinarySearchTree()
     for i in range(len(temperatures)):
         tree.insert(temperatures[i], dates[i])
@@ -212,9 +246,15 @@ def build_temperature_tree(dates, temperatures):
 
 def smooth_with_queue(temperatures, window_size=7):
     """
-    Скользящее среднее с окном window_size.
-    Очередь хранит последние window_size значений.
-    Пока в очереди меньше 7 значений — оставляем исходную температуру.
+    функция smooth_with_queue реализует скользящее среднее с окном window_size (у нас =7)
+    очередь хранит последние 7 значений, пока в очереди меньше 7 значений, оставляем исходную температуру
+
+    параметры:
+    temperatures: список температур
+    window_size: размер окна (у нас 7)
+    
+    возвращает:
+    список сглаженных температур
     """
     smoothed = []
     q = Queue()
@@ -222,21 +262,29 @@ def smooth_with_queue(temperatures, window_size=7):
     for temp in temperatures:
         q.enqueue(temp)
         if q.size() > window_size:
-            q.dequeue()
+            q.dequeue() #удаляем самый старый элемент, если окно переполнено
 
         if q.size() == window_size:
             values = q.get_all_values()
-            smoothed.append(sum(values) / len(values))
+            smoothed.append(sum(values) / len(values)) #считаем среднее
         else:
-            smoothed.append(temp)
+            smoothed.append(temp) #для первых дней без полного окна
 
     return smoothed
 
 
 def smooth_week_from_date(dates, temperatures, start_date_str, window_size=7):
     """
-    Сглаживание 7 дней подряд, начиная с введённой даты (ДД.ММ.ГГГГ).
-    Возвращает (start_idx, список_из_7_сглаженных) или (None, текст_ошибки).
+    функция smooth_week_from_date сглаживает 7 дней подряд, начиная с введённой даты (ДД.ММ.ГГГГ)
+    
+    параметры:
+    dates: список дат
+    temperatures: список температур
+    start_date_str: начальная дата в формате ДД.ММ.ГГГГ
+    window_size: размер окна (у нас 7)
+    
+    возвращает:
+    кортеж (start_idx, список из 7 сглаженных) или (None, текст ошибки)
     """
     start_idx = find_date_index(dates, start_date_str)
     if start_idx < 0:
@@ -245,6 +293,6 @@ def smooth_week_from_date(dates, temperatures, start_date_str, window_size=7):
     if start_idx + window_size > len(temperatures):
         return None, f"От даты {start_date_str} не хватает {window_size} дней подряд в файле"
 
-    segment = temperatures[start_idx:start_idx + window_size]
-    smoothed_segment = smooth_with_queue(segment, window_size)
+    segment = temperatures[start_idx:start_idx + window_size] #вырезаем 7 дней
+    smoothed_segment = smooth_with_queue(segment, window_size) #сглаживаем
     return (start_idx, smoothed_segment), None
