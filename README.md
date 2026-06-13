@@ -4,9 +4,9 @@
 
 Участницы проекта:
 
-Медведева Ксения: main.py, queue.py, часть analysis.py, README.md
+Медведева Ксения: main.py, queue.py, часть analysis.py (до функции def average_temperature_by_month), README.md
 
-Слаутина Екатерина: stack.py, bst.py, часть analysis.py
+Слаутина Екатерина: stack.py, bst.py, остальная часть analysis.py
 
 1.  Введение
 
