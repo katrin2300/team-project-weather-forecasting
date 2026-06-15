@@ -2,6 +2,8 @@
 Командный проект (Слаутина Екатерина 505280, Медведева Ксения 503283, оп 2.4) 
 "Прогнозирование погоды по префиксным суммам"
 
+Ссылка на видео: https://drive.google.com/drive/folders/1IE0jJWIKQiw0KoPNb5697PDC75Yt5ZEz?usp=sharing
+
 Участницы проекта:
 
 Медведева Ксения: main.py, queue.py, часть analysis.py (до функции def average_temperature_by_month), README.md
